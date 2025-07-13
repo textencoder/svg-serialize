@@ -1,1 +1,5 @@
 node_modules
+db.json
+db2.json
+vectors
+vectors_new

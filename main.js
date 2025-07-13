@@ -2,7 +2,7 @@ const {parse} = require('svgson');
 const fs = require('fs');
 const path = require('path')
 
-const folderPath = './vectors/';
+const folderPath = './vectors_new/';
 
 const entries = fs.readdirSync(folderPath);
 //console.log(typeof entries);
@@ -10,7 +10,7 @@ const entries = fs.readdirSync(folderPath);
 //console.log(entries.length);
 //return;
 
-fs.appendFile('./db.json', '[', err => {
+fs.appendFile('./db2.json', '[', err => {
     if (err) {
         console.error(err);
         return;
@@ -34,15 +34,15 @@ fs.readdirSync(folderPath)
             let vector;
             //const vector = JSON.stringify(json, null, 2) + ",";
             //improve modularity of the below conditional
-            if (entries.indexOf(fileName) === 2) {
-                vector = JSON.stringify({name: fileName, data: json}, null, 2) + '\n';
+            if (entries.indexOf(fileName) === 23) {
+                vector = JSON.stringify({name: fileName, vector: json}, null, 2) + '\n';
             } else {
-                vector = JSON.stringify({name: fileName, data: json}, null, 2) + "," + '\n';
+                vector = JSON.stringify({name: fileName, vector: json}, null, 2) + "," + '\n';
             }   
                 
             //console.log(`${vector},`);
             //vector = JSON.stringify({name: fileName, data: json}, null, 2);
-            fs.appendFile('./db.json', vector, err => {
+            fs.appendFile('./db2.json', vector, err => {
                 if (err) {
                     console.error(err);
                 }
@@ -53,7 +53,7 @@ fs.readdirSync(folderPath)
 })
 //setTimeout for final character is a band-aid solution
 setTimeout(() => {
-    fs.appendFile('./db.json', ']', err => {
+    fs.appendFile('./db2.json', ']', err => {
         if (err) {
             console.error(err);
             return;
