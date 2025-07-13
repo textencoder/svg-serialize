@@ -2,64 +2,24 @@ const {parse} = require('svgson');
 const fs = require('fs');
 const path = require('path')
 
-const folderPath = './vectors_new/';
+const folderPath = process.argv[2];
 
-const entries = fs.readdirSync(folderPath);
-//console.log(typeof entries);
-//console.log(entries)
-//console.log(entries.length);
-//return;
+const processFiles = async () => {
+    try {
+        await fs.promises.writeFile('./db.json', '[')
 
-fs.appendFile('./db2.json', '[', err => {
-    if (err) {
-        console.error(err);
-        return;
+        for (const fileName of fs.readdirSync(folderPath)) {
+            const fullPath = path.join(folderPath, fileName);
+            const data = await fs.promises.readFile(fullPath, 'utf-8')
+            const json = await parse(data)
+            const vector = JSON.stringify({name: fileName, vector: json}, null, 2) + "," + '\n';
+            await fs.promises.appendFile('./db.json', vector)
+        }
+
+        await fs.promises.appendFile('./db.json', ']')
+    } catch (err) {
+        console.error("Error: ", err)
     }
-    console.log('[ written');
-})
+}
 
-fs.readdirSync(folderPath)
-.map(fileName => {
-    const fullPath = path.join(folderPath + fileName);
-    console.log('file name: ', fileName);
-    console.log('full path: ', fullPath);
-    fs.readFile(fullPath, 'utf8', (err, data) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        //console.log(data);
-        parse(data)
-        .then(json => {
-            let vector;
-            //const vector = JSON.stringify(json, null, 2) + ",";
-            //improve modularity of the below conditional
-            if (entries.indexOf(fileName) === 23) {
-                vector = JSON.stringify({name: fileName, vector: json}, null, 2) + '\n';
-            } else {
-                vector = JSON.stringify({name: fileName, vector: json}, null, 2) + "," + '\n';
-            }   
-                
-            //console.log(`${vector},`);
-            //vector = JSON.stringify({name: fileName, data: json}, null, 2);
-            fs.appendFile('./db2.json', vector, err => {
-                if (err) {
-                    console.error(err);
-                }
-                console.log('success!')
-            })
-        })
-    })
-})
-//setTimeout for final character is a band-aid solution
-setTimeout(() => {
-    fs.appendFile('./db2.json', ']', err => {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        console.log('] written');
-    })
-}, 1000)
-
-//occasional unexpected behavior of writing commas
+processFiles()
