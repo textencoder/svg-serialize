@@ -14,6 +14,7 @@ const processFiles = async () => {
       const json = await parse(data);
       for (const child of json.children) {
         child.attributes["data-name"] = child.attributes.id;
+        delete child.attributes.id;
       }
       const vector =
         JSON.stringify({ name: fileName, vector: json }, null, 2) + "," + "\n";
