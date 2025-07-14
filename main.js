@@ -12,6 +12,9 @@ const processFiles = async () => {
       const fullPath = path.join(folderPath, fileName);
       const data = await fs.promises.readFile(fullPath, "utf-8");
       const json = await parse(data);
+      for (const child of json.children) {
+        child.attributes["data-name"] = child.attributes.id;
+      }
       const vector =
         JSON.stringify({ name: fileName, vector: json }, null, 2) + "," + "\n";
       await fs.promises.appendFile("./db.json", vector);
