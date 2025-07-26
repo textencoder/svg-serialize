@@ -4,7 +4,7 @@ const path = require("path");
 
 const folderPath = process.argv[2];
 
-let count = 1;
+let count = 0;
 
 const processFiles = async () => {
   try {
@@ -14,13 +14,12 @@ const processFiles = async () => {
       const fullPath = path.join(folderPath, fileName);
       const data = await fs.promises.readFile(fullPath, "utf-8");
       const json = await parse(data);
-      json.id = count;
       for (const child of json.children) {
         child.attributes["data-name"] = child.attributes.id;
         delete child.attributes.id;
       }
       const vector =
-        JSON.stringify({ name: fileName, vector: json }, null, 2) + "," + "\n";
+        JSON.stringify({ id: count, name: fileName, vector: json }, null, 2) + "," + "\n";
       await fs.promises.appendFile("./db.json", vector);
       count += 1;
     }
